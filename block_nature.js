@@ -1,16 +1,16 @@
 /**
- * ALAT TENUN SEMESTA - BUNDLE LENGKAP BERSATU
- * (Elemen Alam, Transformasi, Matematika Semesta, Pertumbuhan)
+ * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
+ * (Elemen Alam, Transformasi & Pivot, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
 const jsGenNature = (typeof javascript !== 'undefined' && javascript.javascriptGenerator) ? javascript.javascriptGenerator : javascriptGenerator;
 
 // ==========================================
-// 1. ELEMEN ALAM (6 BASIS UTAMA)
+// 1. KATEGORI ELEMEN ALAM (6 BASIS UTAMA)
 // ==========================================
 
-// 1.1 Kelopak / Daun
+// 1.1 Kelopak Bunga & Daun Organik
 Blockly.Blocks['nature_petal'] = {
   init: function() {
     this.appendDummyInput().appendField("kelopak / daun");
@@ -60,7 +60,7 @@ jsGenNature.forBlock['nature_petal'] = function(block, generator) {
 `;
 };
 
-// 1.2 Biji / Node
+// 1.2 Biji & Node Spiral
 Blockly.Blocks['nature_seed'] = {
   init: function() {
     this.appendDummyInput().appendField("biji / node");
@@ -88,7 +88,7 @@ jsGenNature.forBlock['nature_seed'] = function(block, generator) {
 `;
 };
 
-// 1.3 Batang / Ranting
+// 1.3 Batang & Ranting Bertingkat
 Blockly.Blocks['nature_stem'] = {
   init: function() {
     this.appendDummyInput().appendField("batang / ranting");
@@ -125,7 +125,7 @@ jsGenNature.forBlock['nature_stem'] = function(block, generator) {
 `;
 };
 
-// 1.4 Modul Origami Belah Ketupat
+// 1.4 Modul Belah Ketupat Origami (Miura-ori)
 Blockly.Blocks['nature_origami_face'] = {
   init: function() {
     this.appendDummyInput().appendField("modul origami (belah ketupat)");
@@ -167,7 +167,7 @@ jsGenNature.forBlock['nature_origami_face'] = function(block, generator) {
 `;
 };
 
-// 1.5 Segmen Cangkang Nautilus
+// 1.5 Segmen Cangkang Nautilus / Sulur
 Blockly.Blocks['nature_shell_segment'] = {
   init: function() {
     this.appendDummyInput().appendField("segmen cangkang / sulur");
@@ -226,10 +226,10 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 };
 
 // ==========================================
-// 2. KATEGORI TRANSFORMASI & ROTASI
+// 2. KATEGORI TRANSFORMASI & ROTASI PUSAT
 // ==========================================
 
-// 2.1 Rotasi / Putar
+// 2.1 Rotasi Standar
 Blockly.Blocks['transform_rotate'] = {
   init: function() {
     this.appendDummyInput().appendField("putar / rotasi (°)");
@@ -265,7 +265,60 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.2 Pindah / Geser
+// 2.2 Rotasi Terhadap Titik Pusat Koordinat (Pivot Point)
+Blockly.Blocks['transform_rotate_around'] = {
+  init: function() {
+    this.appendDummyInput().appendField("putar terhadap pusat (Xp, Yp, Zp)");
+    this.appendValueInput("ANGLE_X").setCheck("Number").appendField("sudut X (°)");
+    this.appendValueInput("ANGLE_Y").setCheck("Number").appendField("sudut Y (°)");
+    this.appendValueInput("ANGLE_Z").setCheck("Number").appendField("sudut Z (°)");
+    this.appendValueInput("PX").setCheck("Number").appendField("pusat X");
+    this.appendValueInput("PY").setCheck("Number").appendField("pusat Y");
+    this.appendValueInput("PZ").setCheck("Number").appendField("pusat Z");
+    this.appendStatementInput("STACK").appendField("objek");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour("#FF9800");
+    this.setTooltip("Memutar objek terhadap titik koordinat pusat perputaran tertentu");
+  }
+};
+
+jsGenNature.forBlock['transform_rotate_around'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var ax = gen.valueToCode(block, 'ANGLE_X', gen.ORDER_ATOMIC) || '0';
+  var ay = gen.valueToCode(block, 'ANGLE_Y', gen.ORDER_ATOMIC) || '0';
+  var az = gen.valueToCode(block, 'ANGLE_Z', gen.ORDER_ATOMIC) || '0';
+  var px = gen.valueToCode(block, 'PX', gen.ORDER_ATOMIC) || '0';
+  var py = gen.valueToCode(block, 'PY', gen.ORDER_ATOMIC) || '0';
+  var pz = gen.valueToCode(block, 'PZ', gen.ORDER_ATOMIC) || '0';
+  var inner = gen.statementToCode(block, 'STACK');
+
+  return `
+(function() {
+  const pivotGroup = new THREE.Group();
+  const innerGroup = new THREE.Group();
+  
+  const cx = Number(${px}), cy = Number(${py}), cz = Number(${pz});
+  pivotGroup.position.set(cx, cy, cz);
+  innerGroup.position.set(-cx, -cy, -cz);
+  
+  pivotGroup.add(innerGroup);
+
+  const parent = sceneGroup;
+  sceneGroup = innerGroup;
+  ${inner}
+  sceneGroup = parent;
+
+  pivotGroup.rotation.x = (Number(${ax}) * Math.PI) / 180;
+  pivotGroup.rotation.y = (Number(${ay}) * Math.PI) / 180;
+  pivotGroup.rotation.z = (Number(${az}) * Math.PI) / 180;
+
+  sceneGroup.add(pivotGroup);
+})();
+`;
+};
+
+// 2.3 Pindah / Geser
 Blockly.Blocks['transform_translate'] = {
   init: function() {
     this.appendDummyInput().appendField("pindah / geser");
@@ -299,7 +352,7 @@ jsGenNature.forBlock['transform_translate'] = function(block, generator) {
 `;
 };
 
-// 2.3 Skala / Perbesar
+// 2.4 Skala / Perbesar
 Blockly.Blocks['transform_scale'] = {
   init: function() {
     this.appendDummyInput().appendField("skala / perbesar");
@@ -333,7 +386,7 @@ jsGenNature.forBlock['transform_scale'] = function(block, generator) {
 `;
 };
 
-// 2.4 Ubah Warna Palette
+// 2.5 Ubah Warna Palette
 Blockly.Blocks['transform_color_palette'] = {
   init: function() {
     this.appendDummyInput()
@@ -373,7 +426,26 @@ jsGenNature.forBlock['transform_color_palette'] = function(block, generator) {
 // 3. KATEGORI MATEMATIKA SEMESTA
 // ==========================================
 
-// 3.1 Sudut Keemasan (Golden Angle 137.5°)
+// 3.1 Input Sudut Tunggal (Satuan Derajat °)
+Blockly.Blocks['nature_angle'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("sudut")
+        .appendField(new Blockly.FieldNumber(45, -360, 360), "ANGLE")
+        .appendField("°");
+    this.setOutput(true, "Number");
+    this.setColour("#5B80A5");
+    this.setTooltip("Input nilai sudut dalam satuan derajat (°)");
+  }
+};
+
+jsGenNature.forBlock['nature_angle'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var angleVal = block.getFieldValue('ANGLE') || '0';
+  return [angleVal, gen.ORDER_ATOMIC];
+};
+
+// 3.2 Sudut Keemasan (Golden Angle 137.5°)
 Blockly.Blocks['nature_golden_angle'] = {
   init: function() {
     this.appendDummyInput().appendField("Sudut Keemasan (137.5°)");
@@ -388,7 +460,7 @@ jsGenNature.forBlock['nature_golden_angle'] = function(block, generator) {
   return ['137.5', gen.ORDER_ATOMIC];
 };
 
-// 3.2 Rasio Emas Phi (1.618)
+// 3.3 Rasio Emas Phi (1.618)
 Blockly.Blocks['nature_phi_ratio'] = {
   init: function() {
     this.appendDummyInput().appendField("Rasio Emas Phi (1.618)");
@@ -401,4 +473,52 @@ Blockly.Blocks['nature_phi_ratio'] = {
 jsGenNature.forBlock['nature_phi_ratio'] = function(block, generator) {
   var gen = generator || jsGenNature;
   return ['1.61803398875', gen.ORDER_ATOMIC];
+};
+
+// 3.4 Deret Fibonacci (Suku ke-n)
+Blockly.Blocks['nature_fibonacci'] = {
+  init: function() {
+    this.appendValueInput("N")
+        .setCheck("Number")
+        .appendField("Fibonacci suku ke-");
+    this.setOutput(true, "Number");
+    this.setColour("#5B80A5");
+    this.setTooltip("Menghitung nilai suku ke-n pada deret Fibonacci (1, 1, 2, 3, 5, 8, 13...)");
+  }
+};
+
+jsGenNature.forBlock['nature_fibonacci'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var nVal = gen.valueToCode(block, 'N', gen.ORDER_ATOMIC) || '1';
+  
+  var code = `(function(n) {
+    let a = 0, b = 1;
+    for (let i = 0; i < Math.floor(n); i++) {
+      let temp = a + b;
+      a = b;
+      b = temp;
+    }
+    return a;
+  })(${nVal})`;
+  
+  return [code, gen.ORDER_ATOMIC];
+};
+
+// 3.5 Konversi Derajat ke Radian
+Blockly.Blocks['nature_deg_to_rad'] = {
+  init: function() {
+    this.appendValueInput("DEG")
+        .setCheck("Number")
+        .appendField("konversi")
+        .appendField("derajat ke rad");
+    this.setOutput(true, "Number");
+    this.setColour("#5B80A5");
+    this.setTooltip("Mengubah sudut derajat menjadi nilai Radian");
+  }
+};
+
+jsGenNature.forBlock['nature_deg_to_rad'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var deg = gen.valueToCode(block, 'DEG', gen.ORDER_ATOMIC) || '0';
+  return [`((${deg}) * Math.PI / 180)`, gen.ORDER_ATOMIC];
 };
