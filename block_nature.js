@@ -229,7 +229,7 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 // 2. KATEGORI TRANSFORMASI (LAYOUT HORIZONTAL / INLINE)
 // ==========================================
 
-// 2.1 BLOK TRANSLASI
+// 2.1 BLOK TRANSLASI (Geser)
 Blockly.Blocks['transform_translate'] = {
   init: function() {
     this.appendDummyInput().appendField("translasi");
@@ -265,7 +265,7 @@ jsGenNature.forBlock['transform_translate'] = function(block, generator) {
 `;
 };
 
-// 2.2 BLOK DILATASI
+// 2.2 BLOK DILATASI (Skala)
 Blockly.Blocks['transform_dilatation'] = {
   init: function() {
     this.appendDummyInput().appendField("dilatasi");
@@ -313,7 +313,7 @@ jsGenNature.forBlock['transform_dilatation'] = function(block, generator) {
 `;
 };
 
-// 2.3 BLOK ROTASI
+// 2.3 BLOK ROTASI (Putar)
 Blockly.Blocks['transform_rotate'] = {
   init: function() {
     this.appendDummyInput().appendField("rotasi");
@@ -367,12 +367,21 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (MENGUBAH WARNA OBJEK)
+// 2.4 BLOK TRANSFORMASI WARNA (Aman dari TypeError)
 Blockly.Blocks['transform_color'] = {
   init: function() {
+    let colorField;
+    if (Blockly.FieldColour) {
+      colorField = new Blockly.FieldColour("#e91e63");
+    } else if (Blockly.fieldColour && Blockly.fieldColour.FieldColour) {
+      colorField = new Blockly.fieldColour.FieldColour("#e91e63");
+    } else {
+      colorField = new Blockly.FieldTextInput("#e91e63");
+    }
+
     this.appendDummyInput()
         .appendField("ubah warna")
-        .appendField(new Blockly.FieldColour("#e91e63"), "COLOR");
+        .appendField(colorField, "COLOR");
     this.appendStatementInput("STACK").appendField("objek");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
