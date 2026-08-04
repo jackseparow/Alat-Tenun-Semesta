@@ -54,6 +54,18 @@
   <script src="block_nature.js"></script>
 
   <script>
+    // Trik GeoBlock: Set Matriks Palet Warna secara aman jika FieldColour tersedia
+    if (Blockly.FieldColour) {
+      Blockly.FieldColour.COLOURS = [
+        "#e91e63", "#ff4081", "#f44336", "#b71c1c",
+        "#ff9800", "#e65100", "#ffeb3b", "#ffc107",
+        "#4caf50", "#8bc34a", "#1b5e20", "#00bcd4",
+        "#2196f3", "#1a237e", "#9c27b0", "#795548",
+        "#3e2723", "#ffffff", "#9e9e9e", "#212121"
+      ];
+      Blockly.FieldColour.COLUMNS = 4;
+    }
+
     const jsGen = (typeof javascript !== 'undefined' && javascript.javascriptGenerator) ? javascript.javascriptGenerator : javascriptGenerator;
 
     const toolboxXml = `
@@ -115,7 +127,7 @@
             <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
           </block>
 
-          <!-- Transformasi Ubah Warna Palet Spektrum Lengkap -->
+          <!-- Transformasi Ubah Warna Matriks Visual Palet -->
           <block type="transform_color"></block>
         </category>
 
@@ -241,7 +253,7 @@
       }
 
       const code = jsGen.workspaceToCode(workspace);
-      document.getElementById('code-preview').innerText = code || "// Workspace kosong";
+      document.getElementById('code-preview').innerText = code || "// Hasil tenunan kode logika akan muncul di sini...";
 
       try {
         const runCode = new Function('sceneGroup', 'THREE', code);
