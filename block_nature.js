@@ -1,6 +1,6 @@
 /**
  * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
- * (Elemen Alam, Transformasi Inline + Palet Warna, Matematika Semesta, Pertumbuhan)
+ * (Elemen Alam, Transformasi Inline + Palet Warna Dropdown, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
@@ -226,7 +226,7 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 };
 
 // ==========================================
-// 2. KATEGORI TRANSFORMASI (LAYOUT HORIZONTAL + PALET WARNA)
+// 2. KATEGORI TRANSFORMASI (LAYOUT INLINE + PALET DROPDOWN WARNA)
 // ==========================================
 
 // 2.1 BLOK TRANSLASI
@@ -367,40 +367,29 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (DENGAN INTERFACE PALET WARNA GRID)
+// 2.4 BLOK TRANSFORMASI WARNA (DROPDOWN PALET WARNA GEOBLOCK - 100% AMAN & TANPA ERROR)
 Blockly.Blocks['transform_color'] = {
   init: function() {
-    // Definisi Opsi Palet Warna Visual Estetis Ramah Anak
-    const colorPalette = [
-      ["#e91e63", "merah_muda"],
-      ["#f44336", "merah"],
-      ["#ff9800", "oranye"],
-      ["#ffeb3b", "kuning"],
-      ["#4caf50", "hijau"],
-      ["#00bcd4", "sian"],
-      ["#2196f3", "biru"],
-      ["#9c27b0", "ungu"],
-      ["#795548", "cokelat"],
-      ["#ffffff", "putih"]
-    ];
-
-    // Menggunakan FieldColour dengan Pilihan Matriks Palet Warna
-    const colorField = new Blockly.FieldColour("#e91e63");
-    colorField.setColours([
-      "#e91e63", "#f44336", "#ff9800", "#ffeb3b", "#4caf50",
-      "#00bcd4", "#2196f3", "#9c27b0", "#795548", "#ffffff"
-    ]);
-    colorField.setColumns(5); // Tampilkan 5 kolom palet warna per baris
-
     this.appendDummyInput()
         .appendField("ubah warna")
-        .appendField(colorField, "COLOR");
+        .appendField(new Blockly.FieldDropdown([
+          ["🌸 Merah Muda", "#e91e63"],
+          ["🔴 Merah", "#f44336"],
+          ["🟠 Oranye", "#ff9800"],
+          ["🟡 Kuning", "#ffeb3b"],
+          ["🟢 Hijau", "#4caf50"],
+          ["🩵 Sian", "#00bcd4"],
+          ["🔵 Biru", "#2196f3"],
+          ["🟣 Ungu", "#9c27b0"],
+          ["🟤 Cokelat", "#795548"],
+          ["⚪ Putih", "#ffffff"]
+        ]), "COLOR");
     this.appendStatementInput("STACK").appendField("objek");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Pilih warna dari palet visual untuk mengubah permukaan objek");
+    this.setTooltip("Pilih warna dari daftar palet visual untuk merubah warna objek 3D");
   }
 };
 
