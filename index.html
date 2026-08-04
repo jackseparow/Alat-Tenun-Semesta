@@ -50,21 +50,15 @@
     </div>
   </main>
 
-  <!-- Modul Custom Blocks Elemen Alam (6 Elemen Basis Utuh) -->
+  <!-- Modul Bundle Utuh (Elemen Alam + Transformasi) -->
   <script src="block_nature.js"></script>
 
-  <!-- Modul Custom Blocks Transformasi -->
-  <script src="block_color.js"></script>
-  <script src="block_translate.js"></script>
-  <script src="block_rotate.js"></script>
-  <script src="block_scale.js"></script>
-
   <script>
-    const jsGen = javascript.javascriptGenerator || javascriptGenerator;
+    const jsGen = (typeof javascript !== 'undefined' && javascript.javascriptGenerator) ? javascript.javascriptGenerator : javascriptGenerator;
 
     const toolboxXml = `
       <xml id="toolbox" style="display: none">
-        <!-- 1. Benang Elemen Alam (6 Elemen Basis) -->
+        <!-- 1. Benang Elemen Alam (6 Elemen Basis Utama) -->
         <category name="Elemen Alam" colour="#E91E63">
           <!-- 1. Kelopak / Daun -->
           <block type="nature_petal">
