@@ -1,10 +1,39 @@
 /**
  * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
- * (Elemen Alam, Transformasi Inline + Palet Warna Matriks, Matematika Semesta, Pertumbuhan)
+ * (Elemen Alam, Transformasi Inline + Native Color Picker GeoBlock, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
 const jsGenNature = (typeof javascript !== 'undefined' && javascript.javascriptGenerator) ? javascript.javascriptGenerator : javascriptGenerator;
+
+// ==========================================
+// TEKNIK PALET WARNA VISUAL NATIVE GEOBLOCK
+// ==========================================
+function createNativeColorPickerField(defaultColor) {
+  var field = new Blockly.FieldTextInput(defaultColor || '#e91e63');
+
+  field.initView = function() {
+    Blockly.FieldTextInput.prototype.initView.call(this);
+    if (this.textElement_) {
+      this.textElement_.style.display = 'none';
+    }
+  };
+
+  field.showEditor_ = function() {
+    var self = this;
+    var picker = document.createElement('input');
+    picker.type = 'color';
+    picker.value = self.getValue() || '#e91e63';
+
+    picker.addEventListener('input', function() {
+      self.setValue(picker.value);
+    });
+
+    picker.click(); // Membuka pop-up palet warna visual secara langsung
+  };
+
+  return field;
+}
 
 // ==========================================
 // 1. KATEGORI ELEMEN ALAM (6 BASIS UTAMA)
@@ -367,30 +396,19 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (PALET WARNA MATRIKS AMAN GEOBLOCK)
+// 2.4 BLOK TRANSFORMASI WARNA (DENGAN NATIVE COLOR PICKER GEOBLOCK)
 Blockly.Blocks['transform_color'] = {
   init: function() {
-    // Inisialisasi FieldColour dari ekstensi Blockly resmi
-    var colorField = new Blockly.fieldColour.FieldColour('#e91e63');
-    
-    // Set matriks palet warna persis seperti di GeoBlock
-    colorField.setColours([
-      "#e91e63", "#f44336", "#ff9800", "#ffeb3b", "#8bc34a",
-      "#4caf50", "#00bcd4", "#2196f3", "#9c27b0", "#795548",
-      "#e65100", "#ffc107", "#1b5e20", "#1a237e", "#3e2723",
-      "#ffffff", "#9e9e9e", "#212121", "#ff4081", "#009688"
-    ]);
-    colorField.setColumns(5);
-
     this.appendDummyInput()
         .appendField("ubah warna")
-        .appendField(colorField, "COLOR");
+        .appendField(createNativeColorPickerField("#e91e63"), "COLOR");
+
     this.appendStatementInput("STACK").appendField("objek");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Klik untuk memilih warna dari palet matriks visual");
+    this.setTooltip("Klik untuk memilih warna dari palet warna visual");
   }
 };
 
