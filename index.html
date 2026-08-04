@@ -10,6 +10,9 @@
   <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
   <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
   <script src="https://unpkg.com/blockly/msg/id.js"></script>
+  
+  <!-- Plugin Warna Resmi Blockly (Mengatasi TypeError) -->
+  <script src="https://unpkg.com/@blockly/field-colour"></script>
 
   <!-- Three.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -91,7 +94,7 @@
           </block>
         </category>
 
-        <!-- 2. KATEGORI TRANSFORMASI (INLINE & DISERTAI UBAH WARNA) -->
+        <!-- 2. KATEGORI TRANSFORMASI (TRANSLASI, DILATASI, ROTASI, DAN WARNA) -->
         <category name="Transformasi" colour="#FF9800">
           <!-- 2.1 Translasi -->
           <block type="transform_translate">
@@ -118,7 +121,7 @@
             <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
           </block>
 
-          <!-- 2.4 Transformasi Ubah Warna -->
+          <!-- 2.4 Transformasi Warna -->
           <block type="transform_color"></block>
         </category>
 
