@@ -1,6 +1,6 @@
 /**
  * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
- * (Elemen Alam, Transformasi + Palet Warna Lengkap, Matematika Semesta, Pertumbuhan)
+ * (Elemen Alam, Transformasi Inline + Pemilih Warna Matriks, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
@@ -226,7 +226,7 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 };
 
 // ==========================================
-// 2. KATEGORI TRANSFORMASI (LAYOUT INLINE + PALET WARNA LENGKAP)
+// 2. KATEGORI TRANSFORMASI (LAYOUT INLINE + PALET WARNA GRID VISUAL)
 // ==========================================
 
 // 2.1 BLOK TRANSLASI
@@ -367,39 +367,18 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (PALET WARNA LENGKAP SPEKTRUM BERSATU)
+// 2.4 BLOK TRANSFORMASI WARNA (MENGGUNAKAN MATRIKS PALET WARNA GRID)
 Blockly.Blocks['transform_color'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("ubah warna")
-        .appendField(new Blockly.FieldDropdown([
-          ["🌸 Merah Muda (Magenta)", "#e91e63"],
-          ["🌺 Merah Muda Terang", "#ff4081"],
-          ["🔴 Merah Cerah", "#f44336"],
-          ["🍷 Merah Tua / Crimson", "#b71c1c"],
-          ["🟠 Oranye Bunga", "#ff9800"],
-          ["🟧 Oranye Tua", "#e65100"],
-          ["🟡 Kuning Matahari", "#ffeb3b"],
-          ["🌾 Kuning Emas", "#ffc107"],
-          ["🟢 Hijau Daun", "#4caf50"],
-          ["🍃 Hijau Muda / Lime", "#8bc34a"],
-          ["🌲 Hijau Tua / Hutan", "#1b5e20"],
-          ["🩵 Sian / Aqua", "#00bcd4"],
-          ["🔵 Biru Laut", "#2196f3"],
-          ["🌌 Biru Tua / Indigo", "#1a237e"],
-          ["🟣 Ungu / Violet", "#9c27b0"],
-          ["🟤 Cokelat Kayu / Batang", "#795548"],
-          ["🪵 Cokelat Tua / Tanah", "#3e2723"],
-          ["⚪ Putih Murni", "#ffffff"],
-          ["🩶 Abu-abu Perak", "#9e9e9e"],
-          ["🖤 Hitam Karbon", "#212121"]
-        ]), "COLOR");
+        .appendField(new Blockly.FieldColour("#e91e63"), "COLOR");
     this.appendStatementInput("STACK").appendField("objek");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Pilih warna lengkap dari palet spektrum alami untuk objek 3D");
+    this.setTooltip("Klik untuk memilih warna dari palet matriks visual");
   }
 };
 
