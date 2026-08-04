@@ -1,6 +1,6 @@
 /**
  * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
- * (Elemen Alam, Transformasi & Pivot, Matematika Semesta, Pertumbuhan)
+ * (Elemen Alam, Transformasi & Dilatasi, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
@@ -226,29 +226,35 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 };
 
 // ==========================================
-// 2. KATEGORI TRANSFORMASI & ROTASI PUSAT
+// 2. KATEGORI TRANSFORMASI & DILATASI
 // ==========================================
 
-// 2.1 Rotasi Standar
-Blockly.Blocks['transform_rotate'] = {
+// 2.1 Rotasi Terhadap Sumbu (X, Y, Z)
+Blockly.Blocks['transform_rotate_axis'] = {
   init: function() {
-    this.appendDummyInput().appendField("putar / rotasi (°)");
-    this.appendValueInput("X").setCheck("Number").appendField("X");
-    this.appendValueInput("Y").setCheck("Number").appendField("Y");
-    this.appendValueInput("Z").setCheck("Number").appendField("Z");
+    this.appendDummyInput()
+        .appendField("rotasi sumbu")
+        .appendField(new Blockly.FieldDropdown([["Z (putar datar)", "Z"], ["X (guling)", "X"], ["Y (miring)", "Y"]]), "AXIS");
+    this.appendValueInput("ANGLE")
+        .setCheck("Number")
+        .appendField("sebesar");
     this.appendStatementInput("STACK").appendField("objek");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
+    this.setTooltip("Memutar objek pada sumbu X, Y, atau Z sebesar sudut tertentu");
   }
 };
 
-jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
+jsGenNature.forBlock['transform_rotate_axis'] = function(block, generator) {
   var gen = generator || jsGenNature;
-  var rx = gen.valueToCode(block, 'X', gen.ORDER_ATOMIC) || '0';
-  var ry = gen.valueToCode(block, 'Y', gen.ORDER_ATOMIC) || '0';
-  var rz = gen.valueToCode(block, 'Z', gen.ORDER_ATOMIC) || '0';
+  var axis = block.getFieldValue('AXIS') || 'Z';
+  var angle = gen.valueToCode(block, 'ANGLE', gen.ORDER_ATOMIC) || '0';
   var inner = gen.statementToCode(block, 'STACK');
+
+  var rotX = axis === 'X' ? angle : '0';
+  var rotY = axis === 'Y' ? angle : '0';
+  var rotZ = axis === 'Z' ? angle : '0';
 
   return `
 (function() {
@@ -257,40 +263,34 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
   sceneGroup = rotGroup;
   ${inner}
   sceneGroup = parent;
-  rotGroup.rotation.x = (Number(${rx}) * Math.PI) / 180;
-  rotGroup.rotation.y = (Number(${ry}) * Math.PI) / 180;
-  rotGroup.rotation.z = (Number(${rz}) * Math.PI) / 180;
+  rotGroup.rotation.x = (Number(${rotX}) * Math.PI) / 180;
+  rotGroup.rotation.y = (Number(${rotY}) * Math.PI) / 180;
+  rotGroup.rotation.z = (Number(${rotZ}) * Math.PI) / 180;
   sceneGroup.add(rotGroup);
 })();
 `;
 };
 
-// 2.2 Rotasi Terhadap Titik Pusat Koordinat (Pivot Point)
-Blockly.Blocks['transform_rotate_around'] = {
+// 2.2 Rotasi Terhadap Titik Pusat
+Blockly.Blocks['transform_rotate_pivot'] = {
   init: function() {
-    this.appendDummyInput().appendField("putar terhadap pusat (Xp, Yp, Zp)");
-    this.appendValueInput("ANGLE_X").setCheck("Number").appendField("sudut X (°)");
-    this.appendValueInput("ANGLE_Y").setCheck("Number").appendField("sudut Y (°)");
-    this.appendValueInput("ANGLE_Z").setCheck("Number").appendField("sudut Z (°)");
+    this.appendDummyInput().appendField("rotasi terhadap titik pusat");
+    this.appendValueInput("ANGLE").setCheck("Number").appendField("sudut (°)");
     this.appendValueInput("PX").setCheck("Number").appendField("pusat X");
     this.appendValueInput("PY").setCheck("Number").appendField("pusat Y");
-    this.appendValueInput("PZ").setCheck("Number").appendField("pusat Z");
     this.appendStatementInput("STACK").appendField("objek");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Memutar objek terhadap titik koordinat pusat perputaran tertentu");
+    this.setTooltip("Memutar objek dengan acuan titik pusat (X, Y) tertentu");
   }
 };
 
-jsGenNature.forBlock['transform_rotate_around'] = function(block, generator) {
+jsGenNature.forBlock['transform_rotate_pivot'] = function(block, generator) {
   var gen = generator || jsGenNature;
-  var ax = gen.valueToCode(block, 'ANGLE_X', gen.ORDER_ATOMIC) || '0';
-  var ay = gen.valueToCode(block, 'ANGLE_Y', gen.ORDER_ATOMIC) || '0';
-  var az = gen.valueToCode(block, 'ANGLE_Z', gen.ORDER_ATOMIC) || '0';
+  var ang = gen.valueToCode(block, 'ANGLE', gen.ORDER_ATOMIC) || '0';
   var px = gen.valueToCode(block, 'PX', gen.ORDER_ATOMIC) || '0';
   var py = gen.valueToCode(block, 'PY', gen.ORDER_ATOMIC) || '0';
-  var pz = gen.valueToCode(block, 'PZ', gen.ORDER_ATOMIC) || '0';
   var inner = gen.statementToCode(block, 'STACK');
 
   return `
@@ -298,9 +298,9 @@ jsGenNature.forBlock['transform_rotate_around'] = function(block, generator) {
   const pivotGroup = new THREE.Group();
   const innerGroup = new THREE.Group();
   
-  const cx = Number(${px}), cy = Number(${py}), cz = Number(${pz});
-  pivotGroup.position.set(cx, cy, cz);
-  innerGroup.position.set(-cx, -cy, -cz);
+  const cx = Number(${px}), cy = Number(${py});
+  pivotGroup.position.set(cx, cy, 0);
+  innerGroup.position.set(-cx, -cy, 0);
   
   pivotGroup.add(innerGroup);
 
@@ -309,19 +309,95 @@ jsGenNature.forBlock['transform_rotate_around'] = function(block, generator) {
   ${inner}
   sceneGroup = parent;
 
-  pivotGroup.rotation.x = (Number(${ax}) * Math.PI) / 180;
-  pivotGroup.rotation.y = (Number(${ay}) * Math.PI) / 180;
-  pivotGroup.rotation.z = (Number(${az}) * Math.PI) / 180;
-
+  pivotGroup.rotation.z = (Number(${ang}) * Math.PI) / 180;
   sceneGroup.add(pivotGroup);
 })();
 `;
 };
 
-// 2.3 Pindah / Geser
-Blockly.Blocks['transform_translate'] = {
+// 2.3 Dilatasi Skala (Faktor k)
+Blockly.Blocks['transform_dilatation_scale'] = {
   init: function() {
-    this.appendDummyInput().appendField("pindah / geser");
+    this.appendDummyInput().appendField("dilatasi skala (faktor k)");
+    this.appendValueInput("FACTOR").setCheck("Number").appendField("faktor k");
+    this.appendStatementInput("STACK").appendField("objek");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour("#FF9800");
+    this.setTooltip("Melakukan dilatasi perbesaran/perkecilan seragam dengan faktor k");
+  }
+};
+
+jsGenNature.forBlock['transform_dilatation_scale'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var k = gen.valueToCode(block, 'FACTOR', gen.ORDER_ATOMIC) || '1';
+  var inner = gen.statementToCode(block, 'STACK');
+
+  return `
+(function() {
+  const scaleGroup = new THREE.Group();
+  const parent = sceneGroup;
+  sceneGroup = scaleGroup;
+  ${inner}
+  sceneGroup = parent;
+  const factor = Number(${k});
+  scaleGroup.scale.set(factor, factor, factor);
+  sceneGroup.add(scaleGroup);
+})();
+`;
+};
+
+// 2.4 Dilatasi Terhadap Titik Pusat [P, k]
+Blockly.Blocks['transform_dilatation_point'] = {
+  init: function() {
+    this.appendDummyInput().appendField("dilatasi terhadap titik pusat");
+    this.appendValueInput("FACTOR").setCheck("Number").appendField("faktor k");
+    this.appendValueInput("PX").setCheck("Number").appendField("pusat X");
+    this.appendValueInput("PY").setCheck("Number").appendField("pusat Y");
+    this.appendValueInput("PZ").setCheck("Number").appendField("pusat Z");
+    this.appendStatementInput("STACK").appendField("objek");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour("#FF9800");
+    this.setTooltip("Melakukan dilatasi terhadap titik pusat [P, k]");
+  }
+};
+
+jsGenNature.forBlock['transform_dilatation_point'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var k = gen.valueToCode(block, 'FACTOR', gen.ORDER_ATOMIC) || '1';
+  var px = gen.valueToCode(block, 'PX', gen.ORDER_ATOMIC) || '0';
+  var py = gen.valueToCode(block, 'PY', gen.ORDER_ATOMIC) || '0';
+  var pz = gen.valueToCode(block, 'PZ', gen.ORDER_ATOMIC) || '0';
+  var inner = gen.statementToCode(block, 'STACK');
+
+  return `
+(function() {
+  const pGroup = new THREE.Group();
+  const iGroup = new THREE.Group();
+  
+  const cx = Number(${px}), cy = Number(${py}), cz = Number(${pz});
+  pGroup.position.set(cx, cy, cz);
+  iGroup.position.set(-cx, -cy, -cz);
+  
+  pGroup.add(iGroup);
+
+  const parent = sceneGroup;
+  sceneGroup = iGroup;
+  ${inner}
+  sceneGroup = parent;
+
+  const factor = Number(${k});
+  pGroup.scale.set(factor, factor, factor);
+  sceneGroup.add(pGroup);
+})();
+`;
+};
+
+// 2.5 Pergeseran / Translasi
+Blockly.Blocks['transform_translate_simple'] = {
+  init: function() {
+    this.appendDummyInput().appendField("translasi / geser");
     this.appendValueInput("X").setCheck("Number").appendField("X");
     this.appendValueInput("Y").setCheck("Number").appendField("Y");
     this.appendValueInput("Z").setCheck("Number").appendField("Z");
@@ -332,7 +408,7 @@ Blockly.Blocks['transform_translate'] = {
   }
 };
 
-jsGenNature.forBlock['transform_translate'] = function(block, generator) {
+jsGenNature.forBlock['transform_translate_simple'] = function(block, generator) {
   var gen = generator || jsGenNature;
   var tx = gen.valueToCode(block, 'X', gen.ORDER_ATOMIC) || '0';
   var ty = gen.valueToCode(block, 'Y', gen.ORDER_ATOMIC) || '0';
@@ -352,41 +428,7 @@ jsGenNature.forBlock['transform_translate'] = function(block, generator) {
 `;
 };
 
-// 2.4 Skala / Perbesar
-Blockly.Blocks['transform_scale'] = {
-  init: function() {
-    this.appendDummyInput().appendField("skala / perbesar");
-    this.appendValueInput("X").setCheck("Number").appendField("X");
-    this.appendValueInput("Y").setCheck("Number").appendField("Y");
-    this.appendValueInput("Z").setCheck("Number").appendField("Z");
-    this.appendStatementInput("STACK").appendField("objek");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour("#FF9800");
-  }
-};
-
-jsGenNature.forBlock['transform_scale'] = function(block, generator) {
-  var gen = generator || jsGenNature;
-  var sx = gen.valueToCode(block, 'X', gen.ORDER_ATOMIC) || '1';
-  var sy = gen.valueToCode(block, 'Y', gen.ORDER_ATOMIC) || '1';
-  var sz = gen.valueToCode(block, 'Z', gen.ORDER_ATOMIC) || '1';
-  var inner = gen.statementToCode(block, 'STACK');
-
-  return `
-(function() {
-  const scaleGroup = new THREE.Group();
-  const parent = sceneGroup;
-  sceneGroup = scaleGroup;
-  ${inner}
-  sceneGroup = parent;
-  scaleGroup.scale.set(Number(${sx}), Number(${sy}), Number(${sz}));
-  sceneGroup.add(scaleGroup);
-})();
-`;
-};
-
-// 2.5 Ubah Warna Palette
+// 2.6 Ubah Warna Palette
 Blockly.Blocks['transform_color_palette'] = {
   init: function() {
     this.appendDummyInput()
@@ -521,4 +563,26 @@ jsGenNature.forBlock['nature_deg_to_rad'] = function(block, generator) {
   var gen = generator || jsGenNature;
   var deg = gen.valueToCode(block, 'DEG', gen.ORDER_ATOMIC) || '0';
   return [`((${deg}) * Math.PI / 180)`, gen.ORDER_ATOMIC];
+};
+
+// 3.6 Modulo (Sisa Bagi)
+Blockly.Blocks['nature_modulo'] = {
+  init: function() {
+    this.appendValueInput("DIVIDEND")
+        .setCheck("Number");
+    this.appendValueInput("DIVISOR")
+        .setCheck("Number")
+        .appendField("modulo");
+    this.setInputsInline(true);
+    this.setOutput(true, "Number");
+    this.setColour("#5B80A5");
+    this.setTooltip("Menghitung sisa hasil pembagian (modulo) A % B");
+  }
+};
+
+jsGenNature.forBlock['nature_modulo'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var div = gen.valueToCode(block, 'DIVIDEND', gen.ORDER_ATOMIC) || '0';
+  var sor = gen.valueToCode(block, 'DIVISOR', gen.ORDER_ATOMIC) || '1';
+  return [`((${div}) % (${sor}))`, gen.ORDER_ATOMIC];
 };
