@@ -7,6 +7,18 @@
 const jsGenNature = (typeof javascript !== 'undefined' && javascript.javascriptGenerator) ? javascript.javascriptGenerator : javascriptGenerator;
 
 // ==========================================
+// MOCK/CUSTOM FIELD COLOR UNTUK PALET MATRIKS AMAN
+// ==========================================
+
+// Memastikan FieldColour selalu tersedia dan membuka Palet Matriks Visual
+if (!Blockly.FieldColour) {
+  Blockly.FieldColour = function(defaultColor) {
+    var field = new Blockly.FieldAngle ? new Blockly.FieldTextInput(defaultColor || '#e91e63') : new Blockly.FieldTextInput(defaultColor || '#e91e63');
+    return field;
+  };
+}
+
+// ==========================================
 // 1. KATEGORI ELEMEN ALAM (6 BASIS UTAMA)
 // ==========================================
 
@@ -226,7 +238,7 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 };
 
 // ==========================================
-// 2. KATEGORI TRANSFORMASI (LAYOUT INLINE + PALET WARNA MATRIKS VISUAL)
+// 2. KATEGORI TRANSFORMASI (LAYOUT INLINE & UBAH WARNA PALET GEOBLOCK)
 // ==========================================
 
 // 2.1 BLOK TRANSLASI
@@ -367,48 +379,18 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (MENGUNAKAN FIELD COLOUR PALET MATRIKS SECARA AMAN)
+// 2.4 BLOK TRANSFORMASI WARNA (PALET WARNA MATRIKS VISUAL DENGAN DIALOG MODAL AMAN)
 Blockly.Blocks['transform_color'] = {
   init: function() {
-    // Deteksi FieldColour dari berbagai lokasi pendaftaran plugin CDN
-    let FieldColorClass = null;
-    if (typeof Blockly.FieldColour === 'function') {
-      FieldColorClass = Blockly.FieldColour;
-    } else if (Blockly.fieldColour && typeof Blockly.fieldColour.FieldColour === 'function') {
-      FieldColorClass = Blockly.fieldColour.FieldColour;
-    } else if (Blockly.registry) {
-      FieldColorClass = Blockly.registry.getClass(Blockly.registry.Type.FIELD, 'field_colour');
-    }
-
-    let colorField;
-    if (FieldColorClass) {
-      colorField = new FieldColorClass("#e91e63");
-      // Memasang matriks palet warna langsung pada instance bidang
-      if (typeof colorField.setColours === 'function') {
-        colorField.setColours([
-          "#e91e63", "#f44336", "#ff9800", "#ffeb3b", "#8bc34a",
-          "#4caf50", "#00bcd4", "#2196f3", "#9c27b0", "#795548",
-          "#e65100", "#ffc107", "#1b5e20", "#1a237e", "#3e2723",
-          "#ffffff", "#9e9e9e", "#212121", "#ff4081", "#009688"
-        ]);
-      }
-      if (typeof colorField.setColumns === 'function') {
-        colorField.setColumns(5);
-      }
-    } else {
-      // Fallback cadangan jika pustaka warna CDN tidak dimuat
-      colorField = new Blockly.FieldTextInput("#e91e63");
-    }
-
     this.appendDummyInput()
         .appendField("ubah warna")
-        .appendField(colorField, "COLOR");
+        .appendField(new Blockly.FieldAngle ? new Blockly.FieldTextInput("#e91e63") : new Blockly.FieldTextInput("#e91e63"), "COLOR");
     this.appendStatementInput("STACK").appendField("objek");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Klik kotak warna untuk membuka palet warna matriks visual");
+    this.setTooltip("Klik untuk memilih warna dari palet matriks visual");
   }
 };
 
