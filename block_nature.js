@@ -229,7 +229,7 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 // 2. KATEGORI TRANSFORMASI (LAYOUT HORIZONTAL / INLINE)
 // ==========================================
 
-// 2.1 BLOK TRANSLASI
+// 2.1 BLOK TRANSLASI (Geser - Input Ringkas ke Kanan)
 Blockly.Blocks['transform_translate'] = {
   init: function() {
     this.appendDummyInput().appendField("translasi");
@@ -237,7 +237,7 @@ Blockly.Blocks['transform_translate'] = {
     this.appendValueInput("Y").setCheck("Number").appendField("Y");
     this.appendValueInput("Z").setCheck("Number").appendField("Z");
     this.appendStatementInput("STACK").appendField("objek");
-    this.setInputsInline(true);
+    this.setInputsInline(true); // Layout Horizontal ke Kanan
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
@@ -265,7 +265,7 @@ jsGenNature.forBlock['transform_translate'] = function(block, generator) {
 `;
 };
 
-// 2.2 BLOK DILATASI
+// 2.2 BLOK DILATASI (Skala - Input Ringkas ke Kanan)
 Blockly.Blocks['transform_dilatation'] = {
   init: function() {
     this.appendDummyInput().appendField("dilatasi");
@@ -274,7 +274,7 @@ Blockly.Blocks['transform_dilatation'] = {
     this.appendValueInput("PY").setCheck("Number").appendField("Y");
     this.appendValueInput("PZ").setCheck("Number").appendField("Z");
     this.appendStatementInput("STACK").appendField("objek");
-    this.setInputsInline(true);
+    this.setInputsInline(true); // Layout Horizontal ke Kanan
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
@@ -313,7 +313,7 @@ jsGenNature.forBlock['transform_dilatation'] = function(block, generator) {
 `;
 };
 
-// 2.3 BLOK ROTASI
+// 2.3 BLOK ROTASI (Putar - Input Ringkas ke Kanan)
 Blockly.Blocks['transform_rotate'] = {
   init: function() {
     this.appendDummyInput().appendField("rotasi");
@@ -324,7 +324,7 @@ Blockly.Blocks['transform_rotate'] = {
     this.appendValueInput("PY").setCheck("Number").appendField("Y");
     this.appendValueInput("PZ").setCheck("Number").appendField("Z");
     this.appendStatementInput("STACK").appendField("objek");
-    this.setInputsInline(true);
+    this.setInputsInline(true); // Layout Horizontal ke Kanan
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
@@ -367,18 +367,18 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (MENGUBAH WARNA OBJEK)
+// 2.4 BLOK TRANSFORMASI WARNA (Ubah Warna Objek)
 Blockly.Blocks['transform_color'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("ubah warna")
         .appendField(new Blockly.FieldColour("#e91e63"), "COLOR");
     this.appendStatementInput("STACK").appendField("objek");
-    this.setInputsInline(true);
+    this.setInputsInline(true); // Layout Horizontal ke Kanan
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Mengubah warna permukaan objek 3D di dalamnya");
+    this.setTooltip("Mengubah warna permukaan objek di dalamnya");
   }
 };
 
