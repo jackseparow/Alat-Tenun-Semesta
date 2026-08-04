@@ -1,6 +1,6 @@
 /**
  * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
- * (Elemen Alam, Transformasi Inline + Native Color Picker GeoBlock, Matematika Semesta, Pertumbuhan)
+ * (Elemen Alam Orientasi Z-Atas + Native Color Picker GeoBlock, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
@@ -29,14 +29,14 @@ function createNativeColorPickerField(defaultColor) {
       self.setValue(picker.value);
     });
 
-    picker.click(); // Membuka pop-up palet warna visual secara langsung
+    picker.click();
   };
 
   return field;
 }
 
 // ==========================================
-// 1. KATEGORI ELEMEN ALAM (6 BASIS UTAMA)
+// 1. KATEGORI ELEMEN ALAM (SUMBU Z = ATAS)
 // ==========================================
 
 // 1.1 Kelopak Bunga & Daun Organik
@@ -46,7 +46,7 @@ Blockly.Blocks['nature_petal'] = {
     this.appendValueInput("LENGTH").setCheck("Number").appendField("panjang");
     this.appendValueInput("WIDTH").setCheck("Number").appendField("lebar");
     this.appendValueInput("CURVE").setCheck("Number").appendField("kelengkungan");
-    this.setInputsInline(false);
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#E91E63");
@@ -94,7 +94,7 @@ Blockly.Blocks['nature_seed'] = {
   init: function() {
     this.appendDummyInput().appendField("biji / node");
     this.appendValueInput("RADIUS").setCheck("Number").appendField("ukuran");
-    this.setInputsInline(false);
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
@@ -117,18 +117,18 @@ jsGenNature.forBlock['nature_seed'] = function(block, generator) {
 `;
 };
 
-// 1.3 Batang & Ranting Bertingkat
+// 1.3 Batang & Ranting (Definisi Asli Berorientasi Sumbu Z ke Atas)
 Blockly.Blocks['nature_stem'] = {
   init: function() {
     this.appendDummyInput().appendField("batang / ranting");
     this.appendValueInput("RADIUS_BOTTOM").setCheck("Number").appendField("r-bawah");
     this.appendValueInput("RADIUS_TOP").setCheck("Number").appendField("r-atas");
-    this.appendValueInput("HEIGHT").setCheck("Number").appendField("tinggi");
-    this.setInputsInline(false);
+    this.appendValueInput("HEIGHT").setCheck("Number").appendField("tinggi (Z)");
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#795548");
-    this.setTooltip("Membuat segmen silinder ranting/batang dengan engsel di pangkal");
+    this.setTooltip("Membuat segmen silinder ranting/batang tumbuh tegak lurus ke atas (Sumbu Z)");
   }
 };
 
@@ -144,8 +144,12 @@ jsGenNature.forBlock['nature_stem'] = function(block, generator) {
   const rTop = Number(${rt});
   const heightVal = Number(${h});
 
+  // Membuat geometri silinder standar
   const geo = new THREE.CylinderGeometry(rTop, rBottom, heightVal, 12);
-  geo.translate(0, heightVal / 2, 0);
+
+  // Mensejajarkan orientasi silinder dengan sumbu Z (atas) dan meletakkan pivot di pangkal (0,0,0)
+  geo.rotateX(Math.PI / 2);
+  geo.translate(0, 0, heightVal / 2);
 
   const mat = new THREE.MeshStandardMaterial({ color: 0x8d6e63, roughness: 0.7 });
   const mesh = new THREE.Mesh(geo, mat);
@@ -160,7 +164,7 @@ Blockly.Blocks['nature_origami_face'] = {
     this.appendDummyInput().appendField("modul origami (belah ketupat)");
     this.appendValueInput("SIZE").setCheck("Number").appendField("panjang");
     this.appendValueInput("ANGLE").setCheck("Number").appendField("sudut buka (°)");
-    this.setInputsInline(false);
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#9C27B0");
@@ -202,7 +206,7 @@ Blockly.Blocks['nature_shell_segment'] = {
     this.appendDummyInput().appendField("segmen cangkang / sulur");
     this.appendValueInput("RADIUS").setCheck("Number").appendField("radius");
     this.appendValueInput("TUBE").setCheck("Number").appendField("tebal pipa");
-    this.setInputsInline(false);
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#009688");
@@ -233,7 +237,7 @@ Blockly.Blocks['nature_pivot'] = {
   init: function() {
     this.appendDummyInput().appendField("titik poros (pivot)");
     this.appendValueInput("SIZE").setCheck("Number").appendField("ukuran penanda");
-    this.setInputsInline(false);
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#3F51B5");
@@ -396,7 +400,7 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (DENGAN NATIVE COLOR PICKER GEOBLOCK)
+// 2.4 BLOK TRANSFORMASI WARNA (NATIVE COLOR PICKER GEOBLOCK)
 Blockly.Blocks['transform_color'] = {
   init: function() {
     this.appendDummyInput()
