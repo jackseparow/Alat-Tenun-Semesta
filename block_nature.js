@@ -1,16 +1,16 @@
 /**
- * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH
- * Elemen Alam + Transformasi Dasar
+ * ALAT TENUN SEMESTA - BUNDLE LENGKAP BERSATU
+ * (Elemen Alam, Transformasi, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
 const jsGenNature = (typeof javascript !== 'undefined' && javascript.javascriptGenerator) ? javascript.javascriptGenerator : javascriptGenerator;
 
 // ==========================================
-// 1. ELEMEN BASIS ALAM
+// 1. ELEMEN ALAM (6 BASIS UTAMA)
 // ==========================================
 
-// Kelopak Bunga / Daun
+// 1.1 Kelopak / Daun
 Blockly.Blocks['nature_petal'] = {
   init: function() {
     this.appendDummyInput().appendField("kelopak / daun");
@@ -60,7 +60,7 @@ jsGenNature.forBlock['nature_petal'] = function(block, generator) {
 `;
 };
 
-// Biji / Node Spiral
+// 1.2 Biji / Node
 Blockly.Blocks['nature_seed'] = {
   init: function() {
     this.appendDummyInput().appendField("biji / node");
@@ -88,7 +88,7 @@ jsGenNature.forBlock['nature_seed'] = function(block, generator) {
 `;
 };
 
-// Batang / Ranting
+// 1.3 Batang / Ranting
 Blockly.Blocks['nature_stem'] = {
   init: function() {
     this.appendDummyInput().appendField("batang / ranting");
@@ -125,7 +125,7 @@ jsGenNature.forBlock['nature_stem'] = function(block, generator) {
 `;
 };
 
-// Modul Belah Ketupat Origami
+// 1.4 Modul Origami Belah Ketupat
 Blockly.Blocks['nature_origami_face'] = {
   init: function() {
     this.appendDummyInput().appendField("modul origami (belah ketupat)");
@@ -167,7 +167,7 @@ jsGenNature.forBlock['nature_origami_face'] = function(block, generator) {
 `;
 };
 
-// Segmen Cangkang Nautilus
+// 1.5 Segmen Cangkang Nautilus
 Blockly.Blocks['nature_shell_segment'] = {
   init: function() {
     this.appendDummyInput().appendField("segmen cangkang / sulur");
@@ -199,7 +199,7 @@ jsGenNature.forBlock['nature_shell_segment'] = function(block, generator) {
 `;
 };
 
-// Titik Poros / Pivot Node
+// 1.6 Titik Poros / Pivot Node
 Blockly.Blocks['nature_pivot'] = {
   init: function() {
     this.appendDummyInput().appendField("titik poros (pivot)");
@@ -225,27 +225,11 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 `;
 };
 
-// Sudut Keemasan (Golden Angle 137.5°)
-Blockly.Blocks['nature_golden_angle'] = {
-  init: function() {
-    this.appendDummyInput().appendField("Sudut Keemasan (137.5°)");
-    this.setOutput(true, "Number");
-    this.setColour("#5B80A5");
-    this.setTooltip("Konstanta rasio penataan alami (Golden Angle = 137.5 derajat)");
-  }
-};
-
-jsGenNature.forBlock['nature_golden_angle'] = function(block, generator) {
-  var gen = generator || jsGenNature;
-  return ['137.5', gen.ORDER_ATOMIC];
-};
-
-
 // ==========================================
-// 2. TRANSFORMASI DASAR (DIPADUKAN KEMBALI)
+// 2. KATEGORI TRANSFORMASI & ROTASI
 // ==========================================
 
-// Rotasi
+// 2.1 Rotasi / Putar
 Blockly.Blocks['transform_rotate'] = {
   init: function() {
     this.appendDummyInput().appendField("putar / rotasi (°)");
@@ -281,7 +265,7 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// Pindah / Translate
+// 2.2 Pindah / Geser
 Blockly.Blocks['transform_translate'] = {
   init: function() {
     this.appendDummyInput().appendField("pindah / geser");
@@ -315,7 +299,7 @@ jsGenNature.forBlock['transform_translate'] = function(block, generator) {
 `;
 };
 
-// Skala / Scale
+// 2.3 Skala / Perbesar
 Blockly.Blocks['transform_scale'] = {
   init: function() {
     this.appendDummyInput().appendField("skala / perbesar");
@@ -349,7 +333,7 @@ jsGenNature.forBlock['transform_scale'] = function(block, generator) {
 `;
 };
 
-// Warna / Color Palette
+// 2.4 Ubah Warna Palette
 Blockly.Blocks['transform_color_palette'] = {
   init: function() {
     this.appendDummyInput()
@@ -383,4 +367,38 @@ jsGenNature.forBlock['transform_color_palette'] = function(block, generator) {
   sceneGroup.add(colorGroup);
 })();
 `;
+};
+
+// ==========================================
+// 3. KATEGORI MATEMATIKA SEMESTA
+// ==========================================
+
+// 3.1 Sudut Keemasan (Golden Angle 137.5°)
+Blockly.Blocks['nature_golden_angle'] = {
+  init: function() {
+    this.appendDummyInput().appendField("Sudut Keemasan (137.5°)");
+    this.setOutput(true, "Number");
+    this.setColour("#5B80A5");
+    this.setTooltip("Konstanta rasio penataan alami (Golden Angle = 137.5 derajat)");
+  }
+};
+
+jsGenNature.forBlock['nature_golden_angle'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  return ['137.5', gen.ORDER_ATOMIC];
+};
+
+// 3.2 Rasio Emas Phi (1.618)
+Blockly.Blocks['nature_phi_ratio'] = {
+  init: function() {
+    this.appendDummyInput().appendField("Rasio Emas Phi (1.618)");
+    this.setOutput(true, "Number");
+    this.setColour("#5B80A5");
+    this.setTooltip("Rasio Keemasan / Golden Ratio (1.618033...)");
+  }
+};
+
+jsGenNature.forBlock['nature_phi_ratio'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  return ['1.61803398875', gen.ORDER_ATOMIC];
 };
