@@ -1,202 +1,225 @@
-/**
- * Custom Blocks: ALAT TENUN SEMESTA (Basis Elemen Alam & Fraktal 3D)
- * BBGTK DIY
- */
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alat Tenun Semesta - BBGTK DIY</title>
+  
+  <!-- Blockly CDN Core & Generators -->
+  <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
+  <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
+  <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+  <script src="https://unpkg.com/blockly/msg/id.js"></script>
 
-// 1. Elemen Basis: Kelopak Bunga / Daun Organik
-Blockly.Blocks['nature_petal'] = {
-  init: function() {
-    this.appendDummyInput().appendField("kelopak / daun");
-    this.appendValueInput("LENGTH").setCheck("Number").appendField("panjang");
-    this.appendValueInput("WIDTH").setCheck("Number").appendField("lebar");
-    this.appendValueInput("CURVE").setCheck("Number").appendField("kelengkungan");
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour("#E91E63");
-    this.setTooltip("Membuat mahkota kelopak bunga atau daun melengkung 3D");
-  }
-};
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-javascript.javascriptGenerator.forBlock['nature_petal'] = function(block, generator) {
-  var len = generator.valueToCode(block, 'LENGTH', generator.ORDER_ATOMIC) || '15';
-  var wid = generator.valueToCode(block, 'WIDTH', generator.ORDER_ATOMIC) || '6';
-  var curve = generator.valueToCode(block, 'CURVE', generator.ORDER_ATOMIC) || '4';
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    #app-header { height: 50px; background-color: #121a14; color: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); z-index: 10; border-bottom: 1px solid rgba(129, 199, 132, 0.2); }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .header-logo { height: 32px; width: auto; object-fit: contain; }
+    #app-header h1 { font-size: 1.25rem; font-weight: 600; color: #81c784; letter-spacing: 0.5px; }
+    #btn-render { background-color: #2e7d32; color: white; border: none; padding: 8px 18px; font-size: 0.95rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: background-color 0.2s, transform 0.1s; }
+    #btn-render:hover { background-color: #388e3c; }
+    #btn-render:active { transform: scale(0.98); }
+    #main-container { display: flex; width: 100vw; height: calc(100vh - 50px); }
+    #blockly-div { width: 55%; height: 100%; }
+    #viewport-container { width: 45%; height: 100%; position: relative; background-color: #0b100c; }
+    #canvas3d { width: 100%; height: 100%; display: block; }
+    #code-preview { position: absolute; bottom: 10px; left: 10px; right: 10px; height: 100px; background: rgba(5, 10, 6, 0.85); color: #81c784; font-family: 'Courier New', Courier, monospace; font-size: 12px; padding: 10px; border-radius: 6px; overflow-y: auto; pointer-events: none; border: 1px solid rgba(129, 199, 132, 0.2); }
+  </style>
+</head>
+<body>
 
-  return `
-(function() {
-  const l = Number(${len});
-  const w = Number(${wid});
-  const c = Number(${curve});
+  <header id="app-header">
+    <div class="header-left">
+      <img src="bbgtk diy logo.png" alt="Logo BBGTK DIY" class="header-logo">
+      <h1>Alat Tenun Semesta</h1>
+    </div>
+    <button id="btn-render" onclick="renderScene()">Tenun Bentuk 3D</button>
+  </header>
 
-  const shape = new THREE.Shape();
-  shape.moveTo(0, 0);
-  shape.quadraticCurveTo(w / 2, l / 2, 0, l);
-  shape.quadraticCurveTo(-w / 2, l / 2, 0, 0);
+  <main id="main-container">
+    <div id="blockly-div"></div>
+    <div id="viewport-container">
+      <canvas id="canvas3d"></canvas>
+      <pre id="code-preview">// Hasil tenunan kode logika akan muncul di sini...</pre>
+    </div>
+  </main>
 
-  const extrudeSettings = { depth: 0.4, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.1, bevelThickness: 0.1 };
-  const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  <!-- Modul Custom Blocks Elemen Alam (6 Elemen Basis Utuh) -->
+  <script src="block_nature.js"></script>
 
-  const pos = geo.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    let y = pos.getY(i);
-    let z = pos.getZ(i);
-    pos.setZ(i, z + Math.sin((y / l) * Math.PI) * c);
-  }
-  geo.computeVertexNormals();
+  <!-- Modul Custom Blocks Transformasi -->
+  <script src="block_color.js"></script>
+  <script src="block_translate.js"></script>
+  <script src="block_rotate.js"></script>
+  <script src="block_scale.js"></script>
 
-  const mat = new THREE.MeshStandardMaterial({ color: 0xe91e63, roughness: 0.3, metalness: 0.1, side: THREE.DoubleSide });
-  const mesh = new THREE.Mesh(geo, mat);
-  sceneGroup.add(mesh);
-})();
-`;
-};
+  <script>
+    const jsGen = javascript.javascriptGenerator || javascriptGenerator;
 
-// 2. Elemen Basis: Biji / Node Spiral
-Blockly.Blocks['nature_seed'] = {
-  init: function() {
-    this.appendDummyInput().appendField("biji / node");
-    this.appendValueInput("RADIUS").setCheck("Number").appendField("ukuran");
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour("#FF9800");
-    this.setTooltip("Membuat bulatan biji atau titik node spiral");
-  }
-};
+    const toolboxXml = `
+      <xml id="toolbox" style="display: none">
+        <!-- 1. Benang Elemen Alam (6 Elemen Basis) -->
+        <category name="Elemen Alam" colour="#E91E63">
+          <!-- 1. Kelopak / Daun -->
+          <block type="nature_petal">
+            <value name="LENGTH"><shadow type="math_number"><field name="NUM">15</field></shadow></value>
+            <value name="WIDTH"><shadow type="math_number"><field name="NUM">6</field></shadow></value>
+            <value name="CURVE"><shadow type="math_number"><field name="NUM">4</field></shadow></value>
+          </block>
 
-javascript.javascriptGenerator.forBlock['nature_seed'] = function(block, generator) {
-  var rad = generator.valueToCode(block, 'RADIUS', generator.ORDER_ATOMIC) || '1.5';
+          <!-- 2. Biji / Node -->
+          <block type="nature_seed">
+            <value name="RADIUS"><shadow type="math_number"><field name="NUM">1.5</field></shadow></value>
+          </block>
 
-  return `
-(function() {
-  const r = Number(${rad});
-  const geo = new THREE.SphereGeometry(r, 16, 16);
-  const mat = new THREE.MeshStandardMaterial({ color: 0xffb300, roughness: 0.4, metalness: 0.2 });
-  const mesh = new THREE.Mesh(geo, mat);
-  sceneGroup.add(mesh);
-})();
-`;
-};
+          <!-- 3. Batang / Ranting -->
+          <block type="nature_stem">
+            <value name="RADIUS_BOTTOM"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+            <value name="RADIUS_TOP"><shadow type="math_number"><field name="NUM">1.5</field></shadow></value>
+            <value name="HEIGHT"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+          </block>
 
-// 3. Elemen Basis: Batang / Ranting
-Blockly.Blocks['nature_stem'] = {
-  init: function() {
-    this.appendDummyInput().appendField("batang / ranting");
-    this.appendValueInput("RADIUS_BOTTOM").setCheck("Number").appendField("r-bawah");
-    this.appendValueInput("RADIUS_TOP").setCheck("Number").appendField("r-atas");
-    this.appendValueInput("HEIGHT").setCheck("Number").appendField("tinggi");
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour("#795548");
-    this.setTooltip("Membuat segmen silinder ranting/batang pohon");
-  }
-};
+          <!-- 4. Modul Origami -->
+          <block type="nature_origami_face">
+            <value name="SIZE"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+            <value name="ANGLE"><shadow type="math_number"><field name="NUM">60</field></shadow></value>
+          </block>
 
-javascript.javascriptGenerator.forBlock['nature_stem'] = function(block, generator) {
-  var rb = generator.valueToCode(block, 'RADIUS_BOTTOM', generator.ORDER_ATOMIC) || '2';
-  var rt = generator.valueToCode(block, 'RADIUS_TOP', generator.ORDER_ATOMIC) || '1.5';
-  var h = generator.valueToCode(block, 'HEIGHT', generator.ORDER_ATOMIC) || '10';
+          <!-- 5. Segmen Cangkang Nautilus -->
+          <block type="nature_shell_segment">
+            <value name="RADIUS"><shadow type="math_number"><field name="NUM">8</field></shadow></value>
+            <value name="TUBE"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+          </block>
 
-  return `
-(function() {
-  const rBottom = Number(${rb});
-  const rTop = Number(${rt});
-  const heightVal = Number(${h});
+          <!-- 6. Titik Poros / Pivot Node -->
+          <block type="nature_pivot">
+            <value name="SIZE"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+          </block>
+        </category>
 
-  const geo = new THREE.CylinderGeometry(rTop, rBottom, heightVal, 12);
-  geo.translate(0, heightVal / 2, 0); // Pindahkan origin ke pangkal bawah batang
+        <!-- 2. Transformasi & Rotasi -->
+        <category name="Transformasi" colour="#FF9800">
+          <block type="transform_rotate">
+            <value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="Z"><shadow type="math_number"><field name="NUM">137.5</field></shadow></value>
+          </block>
 
-  const mat = new THREE.MeshStandardMaterial({ color: 0x8d6e63, roughness: 0.7 });
-  const mesh = new THREE.Mesh(geo, mat);
-  sceneGroup.add(mesh);
-})();
-`;
-};
+          <block type="transform_translate">
+            <value name="X"><shadow type="math_number"><field name="NUM">5</field></shadow></value>
+            <value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="Z"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+          </block>
 
-// 4. Elemen Basis: Modul Origami / Flap Mekar (Miura-ori Face)
-Blockly.Blocks['nature_origami_face'] = {
-  init: function() {
-    this.appendDummyInput().appendField("modul origami (belah ketupat)");
-    this.appendValueInput("SIZE").setCheck("Number").appendField("panjang");
-    this.appendValueInput("ANGLE").setCheck("Number").appendField("sudut buka (°)");
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour("#9C27B0");
-    this.setTooltip("Membuat permukaan lipatan belah ketupat origami untuk struktur mekar");
-  }
-};
+          <block type="transform_scale">
+            <value name="X"><shadow type="math_number"><field name="NUM">1.1</field></shadow></value>
+            <value name="Y"><shadow type="math_number"><field name="NUM">1.1</field></shadow></value>
+            <value name="Z"><shadow type="math_number"><field name="NUM">1.1</field></shadow></value>
+          </block>
 
-javascript.javascriptGenerator.forBlock['nature_origami_face'] = function(block, generator) {
-  var size = generator.valueToCode(block, 'SIZE', generator.ORDER_ATOMIC) || '10';
-  var angle = generator.valueToCode(block, 'ANGLE', generator.ORDER_ATOMIC) || '60';
+          <block type="transform_color_palette"></block>
+        </category>
 
-  return `
-(function() {
-  const s = Number(${size});
-  const rad = (Number(${angle}) * Math.PI) / 180;
+        <!-- 3. Geometri & Matematika Semesta -->
+        <category name="Matematika Semesta" colour="#5B80A5">
+          <block type="nature_golden_angle"></block>
+          <block type="math_number"><field name="NUM">10</field></block>
+          <block type="math_arithmetic"></block>
+          <block type="math_trig"></block>
+        </category>
 
-  const shape = new THREE.Shape();
-  const w = s * Math.sin(rad / 2);
-  const h = s * Math.cos(rad / 2);
+        <!-- 4. Tenun Pertumbuhan (Iterasi) -->
+        <category name="Pertumbuhan" colour="#5CA65C">
+          <block type="controls_for">
+            <field name="VAR">i</field>
+            <value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+            <value name="TO"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
+            <value name="BY"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+          </block>
+        </category>
 
-  shape.moveTo(0, h);
-  shape.lineTo(w, 0);
-  shape.lineTo(0, -h);
-  shape.lineTo(-w, 0);
-  shape.closePath();
+        <!-- 5. Variabel -->
+        <category name="Variabel" colour="#A55B80" custom="VARIABLE"></category>
+      </xml>
+    `;
 
-  const geo = new THREE.ShapeGeometry(shape);
-  const mat = new THREE.MeshStandardMaterial({ color: 0xab47bc, side: THREE.DoubleSide, roughness: 0.3 });
-  const mesh = new THREE.Mesh(geo, mat);
-  sceneGroup.add(mesh);
-})();
-`;
-};
+    const workspace = Blockly.inject('blockly-div', {
+      toolbox: toolboxXml,
+      scrollbars: true,
+      zoom: { controls: true, wheel: true, startScale: 1.0, maxScale: 3, minScale: 0.3, scaleSpeed: 1.2 },
+      grid: { spacing: 20, length: 3, colour: '#1b3a1e', snap: true }
+    });
 
-// 5. Elemen Basis: Segmen Cangkang / Sulur Lengkung
-Blockly.Blocks['nature_shell_segment'] = {
-  init: function() {
-    this.appendDummyInput().appendField("segmen cangkang / sulur");
-    this.appendValueInput("RADIUS").setCheck("Number").appendField("radius");
-    this.appendValueInput("TUBE").setCheck("Number").appendField("tebal pipa");
-    this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour("#009688");
-    this.setTooltip("Membuat lengkungan melingkar/torus bertahap untuk cangkang nautilus");
-  }
-};
+    const canvas = document.getElementById('canvas3d');
+    const container = document.getElementById('viewport-container');
+    
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b100c);
 
-javascript.javascriptGenerator.forBlock['nature_shell_segment'] = function(block, generator) {
-  var r = generator.valueToCode(block, 'RADIUS', generator.ORDER_ATOMIC) || '8';
-  var t = generator.valueToCode(block, 'TUBE', generator.ORDER_ATOMIC) || '2';
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.up.set(0, 0, 1);
+    camera.position.set(0, -80, 60);
 
-  return `
-(function() {
-  const radius = Number(${r});
-  const tube = Number(${t});
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-  const geo = new THREE.TorusGeometry(radius, tube, 12, 24, Math.PI / 3);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x26a69a, roughness: 0.3 });
-  const mesh = new THREE.Mesh(geo, mat);
-  sceneGroup.add(mesh);
-})();
-`;
-};
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0, 0);
+    controls.enableDamping = true;
 
-// 6. Blok Kunci: Sudut Keemasan (Golden Angle 137.5°)
-Blockly.Blocks['nature_golden_angle'] = {
-  init: function() {
-    this.appendDummyInput().appendField("Sudut Keemasan (137.5°)");
-    this.setOutput(true, "Number");
-    this.setColour("#5B80A5");
-    this.setTooltip("Konstanta rasio penataan alami (Golden Angle = 137.5 derajat)");
-  }
-};
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
 
-javascript.javascriptGenerator.forBlock['nature_golden_angle'] = function(block) {
-  return ['137.5', javascript.javascriptGenerator.ORDER_ATOMIC];
-};
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight.position.set(30, -50, 80);
+    scene.add(dirLight);
+
+    const gridHelper = new THREE.GridHelper(100, 50, 0x2e7d32, 0x142817);
+    gridHelper.rotation.x = Math.PI / 2;
+    scene.add(gridHelper);
+
+    const renderGroup = new THREE.Group();
+    scene.add(renderGroup);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+
+    function renderScene() {
+      while(renderGroup.children.length > 0){ 
+        const obj = renderGroup.children[0];
+        if (obj.geometry) obj.geometry.dispose();
+        renderGroup.remove(obj); 
+      }
+
+      const code = jsGen.workspaceToCode(workspace);
+      document.getElementById('code-preview').innerText = code || "// Workspace kosong";
+
+      try {
+        const runCode = new Function('sceneGroup', 'THREE', code);
+        runCode(renderGroup, THREE);
+      } catch (e) {
+        console.error("Error eksekusi simulasi tenunan:", e);
+      }
+    }
+  </script>
+</body>
+</html>
