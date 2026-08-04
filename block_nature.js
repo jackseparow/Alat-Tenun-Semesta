@@ -1,6 +1,6 @@
 /**
  * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
- * (Elemen Alam, Transformasi Inline + Pemilih Warna Matriks, Matematika Semesta, Pertumbuhan)
+ * (Elemen Alam, Transformasi Inline + Palet Warna Matriks Visual Aman, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
@@ -226,7 +226,7 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 };
 
 // ==========================================
-// 2. KATEGORI TRANSFORMASI (LAYOUT INLINE + PALET WARNA GRID VISUAL)
+// 2. KATEGORI TRANSFORMASI (LAYOUT INLINE & UBAH WARNA AMAN)
 // ==========================================
 
 // 2.1 BLOK TRANSLASI
@@ -367,18 +367,29 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (MENGGUNAKAN MATRIKS PALET WARNA GRID)
+// 2.4 BLOK TRANSFORMASI WARNA - PENGECEKAN DINAMIS BEBAS CRASH
 Blockly.Blocks['transform_color'] = {
   init: function() {
+    let colorField;
+    // Cek ketersediaan FieldColour dari pustaka terpisah atau window
+    if (typeof Blockly.FieldColour === 'function') {
+      colorField = new Blockly.FieldColour("#e91e63");
+    } else if (Blockly.fieldColour && typeof Blockly.fieldColour.FieldColour === 'function') {
+      colorField = new Blockly.fieldColour.FieldColour("#e91e63");
+    } else {
+      // Fallback aman jika plugin warna CDN belum dimuat
+      colorField = new Blockly.FieldTextInput("#e91e63");
+    }
+
     this.appendDummyInput()
         .appendField("ubah warna")
-        .appendField(new Blockly.FieldColour("#e91e63"), "COLOR");
+        .appendField(colorField, "COLOR");
     this.appendStatementInput("STACK").appendField("objek");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Klik untuk memilih warna dari palet matriks visual");
+    this.setTooltip("Mengubah warna permukaan objek 3D");
   }
 };
 
