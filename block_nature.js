@@ -1,6 +1,6 @@
 /**
  * ALAT TENUN SEMESTA - BUNDLE MODUL UTUH LENGKAP
- * (Elemen Alam, Transformasi Inline + Warna, Matematika Semesta, Pertumbuhan)
+ * (Elemen Alam, Transformasi Inline + Palet Warna, Matematika Semesta, Pertumbuhan)
  * BBGTK DIY
  */
 
@@ -226,10 +226,10 @@ jsGenNature.forBlock['nature_pivot'] = function(block, generator) {
 };
 
 // ==========================================
-// 2. KATEGORI TRANSFORMASI (LAYOUT HORIZONTAL / INLINE)
+// 2. KATEGORI TRANSFORMASI (LAYOUT HORIZONTAL + PALET WARNA)
 // ==========================================
 
-// 2.1 BLOK TRANSLASI (Geser)
+// 2.1 BLOK TRANSLASI
 Blockly.Blocks['transform_translate'] = {
   init: function() {
     this.appendDummyInput().appendField("translasi");
@@ -265,7 +265,7 @@ jsGenNature.forBlock['transform_translate'] = function(block, generator) {
 `;
 };
 
-// 2.2 BLOK DILATASI (Skala)
+// 2.2 BLOK DILATASI
 Blockly.Blocks['transform_dilatation'] = {
   init: function() {
     this.appendDummyInput().appendField("dilatasi");
@@ -313,7 +313,7 @@ jsGenNature.forBlock['transform_dilatation'] = function(block, generator) {
 `;
 };
 
-// 2.3 BLOK ROTASI (Putar)
+// 2.3 BLOK ROTASI
 Blockly.Blocks['transform_rotate'] = {
   init: function() {
     this.appendDummyInput().appendField("rotasi");
@@ -367,17 +367,30 @@ jsGenNature.forBlock['transform_rotate'] = function(block, generator) {
 `;
 };
 
-// 2.4 BLOK TRANSFORMASI WARNA (Aman dari TypeError)
+// 2.4 BLOK TRANSFORMASI WARNA (DENGAN INTERFACE PALET WARNA GRID)
 Blockly.Blocks['transform_color'] = {
   init: function() {
-    let colorField;
-    if (Blockly.FieldColour) {
-      colorField = new Blockly.FieldColour("#e91e63");
-    } else if (Blockly.fieldColour && Blockly.fieldColour.FieldColour) {
-      colorField = new Blockly.fieldColour.FieldColour("#e91e63");
-    } else {
-      colorField = new Blockly.FieldTextInput("#e91e63");
-    }
+    // Definisi Opsi Palet Warna Visual Estetis Ramah Anak
+    const colorPalette = [
+      ["#e91e63", "merah_muda"],
+      ["#f44336", "merah"],
+      ["#ff9800", "oranye"],
+      ["#ffeb3b", "kuning"],
+      ["#4caf50", "hijau"],
+      ["#00bcd4", "sian"],
+      ["#2196f3", "biru"],
+      ["#9c27b0", "ungu"],
+      ["#795548", "cokelat"],
+      ["#ffffff", "putih"]
+    ];
+
+    // Menggunakan FieldColour dengan Pilihan Matriks Palet Warna
+    const colorField = new Blockly.FieldColour("#e91e63");
+    colorField.setColours([
+      "#e91e63", "#f44336", "#ff9800", "#ffeb3b", "#4caf50",
+      "#00bcd4", "#2196f3", "#9c27b0", "#795548", "#ffffff"
+    ]);
+    colorField.setColumns(5); // Tampilkan 5 kolom palet warna per baris
 
     this.appendDummyInput()
         .appendField("ubah warna")
@@ -387,7 +400,7 @@ Blockly.Blocks['transform_color'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#FF9800");
-    this.setTooltip("Mengubah warna permukaan objek 3D di dalamnya");
+    this.setTooltip("Pilih warna dari palet visual untuk mengubah permukaan objek");
   }
 };
 
