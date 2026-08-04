@@ -91,36 +91,32 @@
           </block>
         </category>
 
-        <!-- 2. KATEGORI TRANSFORMASI -->
+        <!-- 2. KATEGORI TRANSFORMASI (3 BLOK TERIKSAN TRANSLASI, DILATASI, ROTASI) -->
         <category name="Transformasi" colour="#FF9800">
-          <block type="transform_rotate_axis">
-            <value name="ANGLE"><shadow type="nature_angle"><field name="ANGLE">137.5</field></shadow></value>
-          </block>
-
-          <block type="transform_rotate_pivot">
-            <value name="ANGLE"><shadow type="nature_angle"><field name="ANGLE">45</field></shadow></value>
-            <value name="PX"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-            <value name="PY"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-          </block>
-
-          <block type="transform_dilatation_scale">
-            <value name="FACTOR"><shadow type="math_number"><field name="NUM">1.2</field></shadow></value>
-          </block>
-
-          <block type="transform_dilatation_point">
-            <value name="FACTOR"><shadow type="math_number"><field name="NUM">1.5</field></shadow></value>
-            <value name="PX"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-            <value name="PY"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-            <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-          </block>
-
-          <block type="transform_translate_simple">
+          <!-- 2.1 Translasi (Geser) -->
+          <block type="transform_translate">
             <value name="X"><shadow type="math_number"><field name="NUM">5</field></shadow></value>
             <value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
             <value name="Z"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
           </block>
 
-          <block type="transform_color_palette"></block>
+          <!-- 2.2 Dilatasi (Skala) -->
+          <block type="transform_dilatation">
+            <value name="FACTOR"><shadow type="math_number"><field name="NUM">1.2</field></shadow></value>
+            <value name="PX"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="PY"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+          </block>
+
+          <!-- 2.3 Rotasi (Putar) -->
+          <block type="transform_rotate">
+            <value name="ANGLE_X"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="ANGLE_Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="ANGLE_Z"><shadow type="nature_angle"><field name="ANGLE">137.5</field></shadow></value>
+            <value name="PX"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="PY"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+            <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+          </block>
         </category>
 
         <!-- 3. KATEGORI MATEMATIKA SEMESTA -->
