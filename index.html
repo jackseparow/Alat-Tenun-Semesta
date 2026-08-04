@@ -91,16 +91,16 @@
           </block>
         </category>
 
-        <!-- 2. KATEGORI TRANSFORMASI (3 BLOK TERIKSAN TRANSLASI, DILATASI, ROTASI) -->
+        <!-- 2. KATEGORI TRANSFORMASI (INLINE KE KANAN & DILENGKAPI UBAH WARNA) -->
         <category name="Transformasi" colour="#FF9800">
-          <!-- 2.1 Translasi (Geser) -->
+          <!-- 2.1 Translasi -->
           <block type="transform_translate">
             <value name="X"><shadow type="math_number"><field name="NUM">5</field></shadow></value>
             <value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
             <value name="Z"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
           </block>
 
-          <!-- 2.2 Dilatasi (Skala) -->
+          <!-- 2.2 Dilatasi -->
           <block type="transform_dilatation">
             <value name="FACTOR"><shadow type="math_number"><field name="NUM">1.2</field></shadow></value>
             <value name="PX"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
@@ -108,7 +108,7 @@
             <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
           </block>
 
-          <!-- 2.3 Rotasi (Putar) -->
+          <!-- 2.3 Rotasi -->
           <block type="transform_rotate">
             <value name="ANGLE_X"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
             <value name="ANGLE_Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
@@ -117,6 +117,9 @@
             <value name="PY"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
             <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
           </block>
+
+          <!-- 2.4 Transformasi Warna -->
+          <block type="transform_color"></block>
         </category>
 
         <!-- 3. KATEGORI MATEMATIKA SEMESTA -->
