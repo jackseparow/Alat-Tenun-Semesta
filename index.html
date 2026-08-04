@@ -10,6 +10,9 @@
   <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
   <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
   <script src="https://unpkg.com/blockly/msg/id.js"></script>
+  
+  <!-- Plugin Warna Resmi Blockly GeoBlock (Dimuat sebelum block_nature.js) -->
+  <script src="https://unpkg.com/@blockly/field-colour"></script>
 
   <!-- Three.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -30,49 +33,6 @@
     #viewport-container { width: 45%; height: 100%; position: relative; background-color: #0b100c; }
     #canvas3d { width: 100%; height: 100%; display: block; }
     #code-preview { position: absolute; bottom: 10px; left: 10px; right: 10px; height: 100px; background: rgba(5, 10, 6, 0.85); color: #81c784; font-family: 'Courier New', Courier, monospace; font-size: 12px; padding: 10px; border-radius: 6px; overflow-y: auto; pointer-events: none; border: 1px solid rgba(129, 199, 132, 0.2); }
-
-    /* STYLING PALET WARNA MATRIKS GEOBLOCK VISUAL Modal */
-    #color-modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
-    #color-modal {
-      background: #1e2820;
-      border: 2px solid #81c784;
-      border-radius: 10px;
-      padding: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-      width: 280px;
-    }
-    #color-modal h3 {
-      color: #81c784;
-      font-size: 14px;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-    .color-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-    .color-swatch {
-      width: 42px;
-      height: 42px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.2);
-      transition: transform 0.15s, border-color 0.15s;
-    }
-    .color-swatch:hover {
-      transform: scale(1.15);
-      border-color: #ffffff;
-      z-index: 2;
-    }
   </style>
 </head>
 <body>
@@ -92,14 +52,6 @@
       <pre id="code-preview">// Hasil tenunan kode logika akan muncul di sini...</pre>
     </div>
   </main>
-
-  <!-- OVERLAY DIALOG PALET WARNA MATRIKS VISUAL -->
-  <div id="color-modal-overlay" onclick="closeColorPalette()">
-    <div id="color-modal" onclick="event.stopPropagation()">
-      <h3>Pilih Warna Semesta</h3>
-      <div class="color-grid" id="color-grid-container"></div>
-    </div>
-  </div>
 
   <!-- Modul Bundle Utuh -->
   <script src="block_nature.js"></script>
@@ -166,7 +118,7 @@
             <value name="PZ"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
           </block>
 
-          <!-- Transformasi Ubah Warna Matriks Visual Palet -->
+          <!-- Transformasi Ubah Warna Palet Grid Matriks -->
           <block type="transform_color"></block>
         </category>
 
@@ -237,50 +189,6 @@
       grid: { spacing: 20, length: 3, colour: '#1b3a1e', snap: true }
     });
 
-    // ==========================================
-    // LOGIKA DIALOG PALET WARNA MATRIKS VISUAL GEOBLOCK
-    // ==========================================
-    const paletteColors = [
-      "#e91e63", "#f44336", "#ff9800", "#ffeb3b", "#8bc34a",
-      "#4caf50", "#00bcd4", "#2196f3", "#9c27b0", "#795548",
-      "#e65100", "#ffc107", "#1b5e20", "#1a237e", "#3e2723",
-      "#ffffff", "#9e9e9e", "#212121", "#ff4081", "#009688"
-    ];
-
-    let activeColorField = null;
-
-    const gridContainer = document.getElementById('color-grid-container');
-    paletteColors.forEach(hex => {
-      const swatch = document.createElement('div');
-      swatch.className = 'color-swatch';
-      swatch.style.backgroundColor = hex;
-      swatch.onclick = function() {
-        if (activeColorField) {
-          activeColorField.setValue(hex);
-        }
-        closeColorPalette();
-      };
-      gridContainer.appendChild(swatch);
-    });
-
-    function closeColorPalette() {
-      document.getElementById('color-modal-overlay').style.display = 'none';
-      activeColorField = null;
-    }
-
-    // Intersepsi Klik Lapangan Warna Blockly agar Membuka Palet Matriks Visual
-    workspace.addChangeListener(function(e) {
-      if (e.type === Blockly.Events.CLICK && e.target === 'FIELD') {
-        const block = workspace.getBlockById(e.blockId);
-        if (block && block.type === 'transform_color') {
-          const field = block.getField('COLOR');
-          activeColorField = field;
-          document.getElementById('color-modal-overlay').style.display = 'flex';
-        }
-      }
-    });
-
-    // 3D VIEWPORT SETUP
     const canvas = document.getElementById('canvas3d');
     const container = document.getElementById('viewport-container');
     
