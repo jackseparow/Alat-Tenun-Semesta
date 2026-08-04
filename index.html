@@ -50,7 +50,7 @@
     </div>
   </main>
 
-  <!-- Modul Bundle Utuh (Elemen Alam + Transformasi) -->
+  <!-- Modul Bundle Utama -->
   <script src="block_nature.js"></script>
 
   <script>
@@ -58,46 +58,40 @@
 
     const toolboxXml = `
       <xml id="toolbox" style="display: none">
-        <!-- 1. Benang Elemen Alam (6 Elemen Basis Utama) -->
+        <!-- 1. KATEGORI ELEMEN ALAM -->
         <category name="Elemen Alam" colour="#E91E63">
-          <!-- 1. Kelopak / Daun -->
           <block type="nature_petal">
             <value name="LENGTH"><shadow type="math_number"><field name="NUM">15</field></shadow></value>
             <value name="WIDTH"><shadow type="math_number"><field name="NUM">6</field></shadow></value>
             <value name="CURVE"><shadow type="math_number"><field name="NUM">4</field></shadow></value>
           </block>
 
-          <!-- 2. Biji / Node -->
           <block type="nature_seed">
             <value name="RADIUS"><shadow type="math_number"><field name="NUM">1.5</field></shadow></value>
           </block>
 
-          <!-- 3. Batang / Ranting -->
           <block type="nature_stem">
             <value name="RADIUS_BOTTOM"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
             <value name="RADIUS_TOP"><shadow type="math_number"><field name="NUM">1.5</field></shadow></value>
             <value name="HEIGHT"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
           </block>
 
-          <!-- 4. Modul Origami -->
           <block type="nature_origami_face">
             <value name="SIZE"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
             <value name="ANGLE"><shadow type="math_number"><field name="NUM">60</field></shadow></value>
           </block>
 
-          <!-- 5. Segmen Cangkang Nautilus -->
           <block type="nature_shell_segment">
             <value name="RADIUS"><shadow type="math_number"><field name="NUM">8</field></shadow></value>
             <value name="TUBE"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
           </block>
 
-          <!-- 6. Titik Poros / Pivot Node -->
           <block type="nature_pivot">
             <value name="SIZE"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
           </block>
         </category>
 
-        <!-- 2. Transformasi & Rotasi -->
+        <!-- 2. KATEGORI TRANSFORMASI -->
         <category name="Transformasi" colour="#FF9800">
           <block type="transform_rotate">
             <value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
@@ -120,15 +114,27 @@
           <block type="transform_color_palette"></block>
         </category>
 
-        <!-- 3. Geometri & Matematika Semesta -->
+        <!-- 3. KATEGORI MATEMATIKA SEMESTA -->
         <category name="Matematika Semesta" colour="#5B80A5">
           <block type="nature_golden_angle"></block>
+          <block type="nature_phi_ratio"></block>
           <block type="math_number"><field name="NUM">10</field></block>
-          <block type="math_arithmetic"></block>
-          <block type="math_trig"></block>
+          
+          <block type="math_arithmetic">
+            <value name="A"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+            <value name="B"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+          </block>
+
+          <block type="math_single">
+            <value name="NUM"><shadow type="math_number"><field name="NUM">9</field></shadow></value>
+          </block>
+
+          <block type="math_trig">
+            <value name="NUM"><shadow type="math_number"><field name="NUM">45</field></shadow></value>
+          </block>
         </category>
 
-        <!-- 4. Tenun Pertumbuhan (Iterasi) -->
+        <!-- 4. KATEGORI PERTUMBUHAN (ITERASI) -->
         <category name="Pertumbuhan" colour="#5CA65C">
           <block type="controls_for">
             <field name="VAR">i</field>
@@ -136,9 +142,13 @@
             <value name="TO"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
             <value name="BY"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
           </block>
+
+          <block type="controls_repeat_ext">
+            <value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+          </block>
         </category>
 
-        <!-- 5. Variabel -->
+        <!-- 5. KATEGORI VARIABEL -->
         <category name="Variabel" colour="#A55B80" custom="VARIABLE"></category>
       </xml>
     `;
