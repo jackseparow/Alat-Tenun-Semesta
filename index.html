@@ -42,9 +42,9 @@
     <!-- Bungkus tombol agar rapi dan bersebelahan -->
     <div style="display: flex; gap: 10px;">
       <button id="btn-render" onclick="renderScene()">Tenun Bentuk 3D</button>
-      <button id="btn-kirim" onclick="kirimKeMoodle()" style="background-color: #f39c12; color: white; border: none; padding: 8px 18px; font-size: 0.95rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: background-color 0.2s;">Kirim ke Moodle</button>
+      <button id="btn-kirim" onclick="kirimKeMoodle()" style="background-color: #f39c12; color: white; border: none; padding: 8px 18px; font-size: 0.95rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: background-color 0.2s;">Kirim</button>
     </div>
-  </header>
+</header>
 
   <main id="main-container">
     <div id="blockly-div"></div>
@@ -267,6 +267,26 @@ function kirimKeMoodle() {
     
     // Notifikasi visual untuk peserta
     alert("Kode berhasil dikirim! Silakan periksa kotak jawaban di Moodle.");
+}
+
+    function kirimKeMoodle() {
+  // A. Mengambil teks kode dari susunan blok
+  const code = jsGen.workspaceToCode(workspace);
+  
+  // B. Mencegah pengiriman jika kanvas masih kosong
+  if (!code || code.trim() === "") {
+    alert("Belum ada blok yang dirakit! Silakan buat tenunan logika terlebih dahulu.");
+    return;
+  }
+
+  // C. Mengirim data keluar menuju Moodle (parent iframe)
+  window.parent.postMessage({
+    tipe: 'JAWABAN_BLOCKLY',
+    kode: code
+  }, "*"); 
+  
+  // D. Memunculkan notifikasi sukses yang universal
+  alert("Kode logika berhasil dikirim!");
 }
     
   </script>
