@@ -34,12 +34,16 @@
 </head>
 <body>
 
-  <header id="app-header">
+<header id="app-header">
     <div class="header-left">
       <img src="bbgtk diy logo.png" alt="Logo BBGTK DIY" class="header-logo">
       <h1>Alat Tenun Semesta</h1>
     </div>
-    <button id="btn-render" onclick="renderScene()">Tenun Bentuk 3D</button>
+    <!-- Bungkus tombol agar rapi dan bersebelahan -->
+    <div style="display: flex; gap: 10px;">
+      <button id="btn-render" onclick="renderScene()">Tenun Bentuk 3D</button>
+      <button id="btn-kirim" onclick="kirimKeMoodle()" style="background-color: #f39c12; color: white; border: none; padding: 8px 18px; font-size: 0.95rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: background-color 0.2s;">Kirim ke Moodle</button>
+    </div>
   </header>
 
   <main id="main-container">
@@ -250,6 +254,21 @@
         console.error("Error eksekusi simulasi tenunan:", e);
       }
     }
+
+function kirimKeMoodle() {
+    // Sesuaikan "Blockly.JavaScript" jika kamu menggunakan generator bahasa lain (misal: Python)
+    var kodeBlok = Blockly.JavaScript.workspaceToCode(workspace);
+    
+    // Mengirim pesan ke Moodle selaku parent window
+    window.parent.postMessage({
+        tipe: 'JAWABAN_BLOCKLY',
+        kode: kodeBlok
+    }, "*"); 
+    
+    // Notifikasi visual untuk peserta
+    alert("Kode berhasil dikirim! Silakan periksa kotak jawaban di Moodle.");
+}
+    
   </script>
 </body>
 </html>
