@@ -438,6 +438,42 @@ jsGenNature.forBlock['transform_color'] = function(block, generator) {
 })();
 `;
 };
+// 2.5 BLOK GRUP OBJEK (MENGGABUNGKAN BEBERAPA ELEMEN)
+Blockly.Blocks['transform_group'] = {
+  init: function() {
+    this.appendDummyInput().appendField("grup objek");
+    this.appendStatementInput("STACK").appendField("isi");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour("#FF9800");
+    this.setTooltip("Menyatukan beberapa elemen alam menjadi satu kesatuan (grup) agar terikat pada satu titik poros (pivot) saat dimanipulasi.");
+  }
+};
+
+jsGenNature.forBlock['transform_group'] = function(block, generator) {
+  var gen = generator || jsGenNature;
+  var inner = gen.statementToCode(block, 'STACK');
+
+  return `
+(function() {
+  const containerGroup = new THREE.Group();
+  
+  // Mengalihkan sementara sceneGroup ke dalam kontainer baru
+  const parent = sceneGroup;
+  sceneGroup = containerGroup;
+  
+  // Merender semua blok yang ada di dalam grup ini
+  ${inner}
+  
+  // Mengembalikan sceneGroup ke asal (parent)
+  sceneGroup = parent;
+  
+  // Memasukkan kontainer utuh ini ke dalam parent
+  sceneGroup.add(containerGroup);
+})();
+`;
+};
 
 // ==========================================
 // 3. KATEGORI MATEMATIKA SEMESTA
